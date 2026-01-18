@@ -2,7 +2,6 @@ gsap.registerPlugin(ScrollTrigger);
 
 document.addEventListener('DOMContentLoaded', () => {
     
-    // 1. Инициализация Lenis (Smooth Scroll)
     const lenis = new Lenis({
         duration: 1.5,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -18,16 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     requestAnimationFrame(raf);
     
-    // 2. Настройки GSAP
     ScrollTrigger.config({
         autoRefreshEvents: "visibilitychange,DOMContentLoaded,load"
     });
     
     gsap.set('.characters', { xPercent: -50, x: 0 });
     
-    // ===== СЕКЦИЯ HERO - БЕЗ ИЗМЕНЕНИЙ =====
-    
-    // Туман
     gsap.to('.fog-overlay', {
         opacity: 1,
         bottom: '0vh',
@@ -40,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Влет персонажей
     gsap.to('.characters', {
         scale: 1.8,
         opacity: 0,
@@ -53,7 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Левая часть
     gsap.to('.left-side', {
         y: -300,
         opacity: 0,
@@ -66,7 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Карточка с танком
     gsap.to('.info-card', {
         y: -250,
         opacity: 0,
@@ -79,7 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Навбар
     gsap.to('.navbar', {
         opacity: 0,
         y: -80,
@@ -92,7 +83,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Параллакс фона
     gsap.to('.hero-section', {
         backgroundPosition: '50% 80%',
         ease: 'none',
@@ -104,9 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // ===== НОВАЯ ЛОГИКА GALLERY SECTION =====
-    
-    // Функция для разбивки текста на слова и буквы
     function splitTextIntoWords(element) {
         const text = element.textContent;
         const words = text.split(' ');
@@ -126,7 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 letterSpan.classList.add('letter');
                 letterSpan.style.display = 'inline-block';
                 
-                // Первая буква видна, остальные скрыты справа
                 if (letterIndex === 0) {
                     gsap.set(letterSpan, { opacity: 1, x: 0 });
                 } else {
@@ -138,20 +124,17 @@ document.addEventListener('DOMContentLoaded', () => {
             
             element.appendChild(wordSpan);
             
-            // Добавляем пробел после слова (кроме последнего)
             if (wordIndex < words.length - 1) {
                 element.appendChild(document.createTextNode(' '));
             }
         });
     }
     
-    // Разбиваем заголовок на слова и буквы
     const titleElement = document.querySelector('.gallery-title');
     if (titleElement) {
         splitTextIntoWords(titleElement);
     }
     
-    // Разбиваем описание на слова и буквы
     const descElement = document.querySelector('.gallery-description');
     if (descElement) {
         splitTextIntoWords(descElement);
@@ -160,18 +143,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const titleWords = document.querySelectorAll('.gallery-title .word');
     const descWords = document.querySelectorAll('.gallery-description .word');
     
-    // Получаем все картинки и сортируем их по вертикальной позиции
     let galleryItems = gsap.utils.toArray('.gallery-item');
     
-    // Сортируем картинки по их позиции на экране (сверху вниз)
     galleryItems.sort((a, b) => {
         const rectA = a.getBoundingClientRect();
         const rectB = b.getBoundingClientRect();
-        // Сравниваем по Y-координате (top)
         return rectA.top - rectB.top;
     });
     
-    // Начальное состояние ВСЕХ картинок - ПРИНУДИТЕЛЬНО скрыты
     galleryItems.forEach((item) => {
         gsap.set(item, {
             opacity: 0,
@@ -181,7 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // ===== АНИМАЦИЯ 1: ЗАГОЛОВОК - слова выезжают справа налево =====
     const titleTimeline = gsap.timeline({
         scrollTrigger: {
             trigger: '.gallery-section',
@@ -191,21 +169,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Анимируем каждое слово по порядку
     titleWords.forEach((word, wordIndex) => {
         const letters = word.querySelectorAll('.letter');
         
-        // Анимируем буквы в слове (кроме первой, она уже видна)
         titleTimeline.to(letters, {
             opacity: 1,
             x: 0,
             duration: 0.4,
             stagger: 0.05,
             ease: 'power2.out'
-        }, wordIndex * 0.15); // Каждое слово начинается с задержкой
+        }, wordIndex * 0.15);
     });
     
-    // ===== АНИМАЦИЯ 2: ОПИСАНИЕ - слова выезжают справа налево =====
     const descTimeline = gsap.timeline({
         scrollTrigger: {
             trigger: '.gallery-section',
@@ -215,46 +190,40 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Анимируем каждое слово по порядку
     descWords.forEach((word, wordIndex) => {
         const letters = word.querySelectorAll('.letter');
         
-        // Анимируем буквы в слове (кроме первой, она уже видна)
         descTimeline.to(letters, {
             opacity: 1,
             x: 0,
             duration: 0.4,
             stagger: 0.05,
             ease: 'power2.out'
-        }, wordIndex * 0.1); // Каждое слово начинается с задержкой
+        }, wordIndex * 0.1);
     });
     
-    // ===== АНИМАЦИЯ 3: ВСЕ КАРТИНКИ ОДНОВРЕМЕННО (максимально плавно) =====
     const imagesTimeline = gsap.timeline({
         scrollTrigger: {
             trigger: '.gallery-section',
             start: 'top 10%',
             end: 'center top',
-            scrub: 3, // Еще больше увеличили для супер плавности
+            scrub: 3,
         }
     });
     
-    // Сначала делаем все картинки видимыми
     imagesTimeline.set(galleryItems, {
         visibility: 'visible'
     });
     
-    // Затем анимируем их появление по порядку с максимально плавными параметрами
     imagesTimeline.to(galleryItems, {
         opacity: 1,
         y: 0,
         scale: 1,
-        duration: 3, // Еще больше увеличили длительность
-        stagger: 0.2, // Увеличили задержку между картинками
-        ease: 'power4.out' // Самый плавный easing
+        duration: 3,
+        stagger: 0.2,
+        ease: 'power4.out'
     });
     
-    // Пин текста (возвращаем рабочую версию)
     ScrollTrigger.create({
         trigger: '.gallery-text',
         start: 'center center',
@@ -266,7 +235,6 @@ document.addEventListener('DOMContentLoaded', () => {
         pinSpacing: false
     });
     
-    // Управление событиями
     ScrollTrigger.refresh();
     
     window.addEventListener('load', () => {

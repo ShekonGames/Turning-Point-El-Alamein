@@ -76,7 +76,7 @@ body {
     text-decoration: none;
     color: white;
     font-size: 24px;
-    font-weight: 400; /* Изменено с 600 на 400 (Regular) */
+    font-weight: 400; 
     transition: opacity 0.3s;
 }
 
@@ -125,7 +125,7 @@ body {
 }
 
 .main-title {
-    font-family: 'Bebas Neue', sans-serif; /* Добавлен новый шрифт */
+    font-family: 'Bebas Neue', sans-serif; 
     font-size: 70px;
     line-height: 1.1;
     margin-bottom: 110px;
@@ -224,7 +224,6 @@ body {
     opacity: 0.8;
 }
 
-
 .content-section {
     position: relative;
     background-color: #000;
@@ -254,7 +253,6 @@ body {
     pointer-events: none;
     z-index: 1;
 }
-
 
 .hero-section::after {
     content: '';
@@ -300,7 +298,6 @@ body {
     color: rgba(255, 255, 255, 0.8);
 }
 
-/* Gallery Section */
 .gallery-section {
     position: relative;
     background-color: #000;
