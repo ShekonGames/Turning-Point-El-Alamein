@@ -76,7 +76,7 @@ body {
     text-decoration: none;
     color: white;
     font-size: 24px;
-    font-weight: 600;
+    font-weight: 400; /* Изменено с 600 на 400 (Regular) */
     transition: opacity 0.3s;
 }
 
@@ -125,6 +125,7 @@ body {
 }
 
 .main-title {
+    font-family: 'Bebas Neue', sans-serif; /* Добавлен новый шрифт */
     font-size: 70px;
     line-height: 1.1;
     margin-bottom: 110px;
