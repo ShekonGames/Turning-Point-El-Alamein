@@ -2,23 +2,38 @@ gsap.registerPlugin(ScrollTrigger);
 
 document.addEventListener('DOMContentLoaded', () => {
     
-    const lenis = new Lenis({
-        duration: 1.5,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        smoothWheel: true,
-        wheelMultiplier: 1,
-    });
+    let currentScroll = window.pageYOffset;
+    let targetScroll = window.pageYOffset;
+    let ease = 0.075;
     
-    lenis.on('scroll', ScrollTrigger.update);
-    
-    function raf(time) {
-        lenis.raf(time);
-        requestAnimationFrame(raf);
+    function smoothScroll() {
+        currentScroll += (targetScroll - currentScroll) * ease;
+        
+        if (Math.abs(targetScroll - currentScroll) < 0.5) {
+            currentScroll = targetScroll;
+        }
+        
+        window.scrollTo(0, currentScroll);
+        requestAnimationFrame(smoothScroll);
     }
-    requestAnimationFrame(raf);
+    
+    window.addEventListener('wheel', (e) => {
+        targetScroll += e.deltaY * 0.5;
+        targetScroll = Math.max(0, Math.min(targetScroll, document.body.scrollHeight - window.innerHeight));
+    }, { passive: true });
+    
+    window.addEventListener('scroll', () => {
+        if (Math.abs(window.pageYOffset - targetScroll) > 1) {
+            targetScroll = window.pageYOffset;
+            currentScroll = window.pageYOffset;
+        }
+    }, { passive: true });
+    
+    smoothScroll();
     
     ScrollTrigger.config({
-        autoRefreshEvents: "visibilitychange,DOMContentLoaded,load"
+        autoRefreshEvents: "visibilitychange,DOMContentLoaded,load",
+        limitCallbacks: true
     });
     
     gsap.set('.characters', { xPercent: -50, x: 0 });
@@ -31,7 +46,8 @@ document.addEventListener('DOMContentLoaded', () => {
             trigger: '.hero-section',
             start: 'top top',
             end: '70% top',
-            scrub: 0.8
+            scrub: 2,
+            invalidateOnRefresh: true
         }
     });
     
@@ -43,7 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
             trigger: '.hero-section',
             start: 'top top',
             end: 'bottom top',
-            scrub: 2
+            scrub: 2.5,
+            invalidateOnRefresh: true
         }
     });
     
@@ -55,7 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
             trigger: '.hero-section',
             start: 'top top',
             end: 'center top',
-            scrub: 1.2
+            scrub: 2,
+            invalidateOnRefresh: true
         }
     });
     
@@ -67,7 +85,8 @@ document.addEventListener('DOMContentLoaded', () => {
             trigger: '.hero-section',
             start: 'top top',
             end: 'center top',
-            scrub: 1.2
+            scrub: 2,
+            invalidateOnRefresh: true
         }
     });
     
@@ -79,7 +98,8 @@ document.addEventListener('DOMContentLoaded', () => {
             trigger: '.hero-section',
             start: 'top top',
             end: '15% top',
-            scrub: 0.5
+            scrub: 1.5,
+            invalidateOnRefresh: true
         }
     });
     
@@ -90,44 +110,45 @@ document.addEventListener('DOMContentLoaded', () => {
             trigger: '.hero-section',
             start: 'top top',
             end: 'bottom top',
-            scrub: true
+            scrub: 2,
+            invalidateOnRefresh: true
         }
     });
     
     function splitTextIntoWords(element) {
         const text = element.textContent;
         const words = text.split(' ');
-        
-        element.innerHTML = '';
+        const fragment = document.createDocumentFragment();
         
         words.forEach((word, wordIndex) => {
             const wordSpan = document.createElement('span');
-            wordSpan.classList.add('word');
-            wordSpan.style.display = 'inline-block';
-            wordSpan.style.whiteSpace = 'nowrap';
+            wordSpan.className = 'word';
+            wordSpan.style.cssText = 'display:inline-block;white-space:nowrap';
             
             const letters = word.split('');
             letters.forEach((letter, letterIndex) => {
                 const letterSpan = document.createElement('span');
                 letterSpan.textContent = letter;
-                letterSpan.classList.add('letter');
-                letterSpan.style.display = 'inline-block';
+                letterSpan.className = 'letter';
+                letterSpan.style.cssText = 'display:inline-block';
                 
-                if (letterIndex === 0) {
-                    gsap.set(letterSpan, { opacity: 1, x: 0 });
-                } else {
-                    gsap.set(letterSpan, { opacity: 0, x: 30 });
+                if (letterIndex > 0) {
+                    letterSpan.style.opacity = '0';
+                    letterSpan.style.transform = 'translateX(30px)';
                 }
                 
                 wordSpan.appendChild(letterSpan);
             });
             
-            element.appendChild(wordSpan);
+            fragment.appendChild(wordSpan);
             
             if (wordIndex < words.length - 1) {
-                element.appendChild(document.createTextNode(' '));
+                fragment.appendChild(document.createTextNode(' '));
             }
         });
+        
+        element.innerHTML = '';
+        element.appendChild(fragment);
     }
     
     const titleElement = document.querySelector('.gallery-title');
@@ -151,13 +172,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return rectA.top - rectB.top;
     });
     
-    galleryItems.forEach((item) => {
-        gsap.set(item, {
-            opacity: 0,
-            y: 50,
-            scale: 0.95,
-            visibility: 'hidden'
-        });
+    gsap.set(galleryItems, {
+        opacity: 0,
+        y: 50,
+        scale: 0.95,
+        visibility: 'hidden'
     });
     
     const titleTimeline = gsap.timeline({
@@ -165,7 +184,8 @@ document.addEventListener('DOMContentLoaded', () => {
             trigger: '.gallery-section',
             start: 'top 60%',
             end: 'top 30%',
-            scrub: 1.5,
+            scrub: 2,
+            invalidateOnRefresh: true
         }
     });
     
@@ -186,7 +206,8 @@ document.addEventListener('DOMContentLoaded', () => {
             trigger: '.gallery-section',
             start: 'top 30%',
             end: 'top 10%',
-            scrub: 1.5,
+            scrub: 2,
+            invalidateOnRefresh: true
         }
     });
     
@@ -207,7 +228,8 @@ document.addEventListener('DOMContentLoaded', () => {
             trigger: '.gallery-section',
             start: 'top 10%',
             end: 'center top',
-            scrub: 3,
+            scrub: 2.5,
+            invalidateOnRefresh: true
         }
     });
     
@@ -232,7 +254,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return `+=${gallerySection.offsetHeight - window.innerHeight}`;
         },
         pin: '.gallery-text',
-        pinSpacing: false
+        pinSpacing: false,
+        invalidateOnRefresh: true
     });
     
     ScrollTrigger.refresh();

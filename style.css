@@ -5,7 +5,11 @@
 }
 
 html {
-    scroll-behavior: smooth;
+    scroll-padding-top: 0;
+}
+
+html, body {
+    overflow-x: hidden;
 }
 
 body {
@@ -24,6 +28,7 @@ body {
     background-attachment: fixed;
     position: relative;
     overflow: hidden;
+    will-change: transform;
 }
 
 .fog-overlay {
@@ -44,6 +49,7 @@ body {
     pointer-events: none;
     z-index: 15;
     opacity: 0;
+    will-change: opacity, bottom;
 }
 
 .hero-section::after {
@@ -57,6 +63,7 @@ body {
     padding: 50px 80px 0 80px;
     position: relative;
     z-index: 20;
+    will-change: opacity, transform;
 }
 
 .logo img {
@@ -99,6 +106,7 @@ body {
     display: flex;
     flex-direction: column;
     max-width: 600px;
+    will-change: opacity, transform;
 }
 
 .subtitle-container {
@@ -161,14 +169,14 @@ body {
     pointer-events: none;
     display: flex;
     justify-content: center;
+    will-change: transform, opacity;
 }
 
 .characters img {
     height: 95vh;
     width: auto;
     display: block;
-    image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
 }
 
@@ -179,13 +187,25 @@ body {
     width: 320px;
     padding: 20px;
     background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
+    will-change: opacity, transform;
+}
+
+.info-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 10px;
+    z-index: -1;
 }
 
 .play-btn-link {
@@ -328,10 +348,14 @@ body {
     letter-spacing: 1px;
 }
 
+.gallery-title .word {
+    display: inline-block;
+    white-space: nowrap;
+}
+
 .gallery-title .letter {
     display: inline-block;
-    transform-origin: center;
-    will-change: transform, opacity;
+    will-change: opacity, transform;
 }
 
 .gallery-description {
@@ -342,10 +366,14 @@ body {
     letter-spacing: 0.5px;
 }
 
+.gallery-description .word {
+    display: inline-block;
+    white-space: nowrap;
+}
+
 .gallery-description .letter {
     display: inline-block;
-    transform-origin: center;
-    will-change: transform, opacity;
+    will-change: opacity, transform;
 }
 
 .gallery-images {
@@ -366,8 +394,7 @@ body {
     overflow: hidden;
     border-radius: 5px;
     background-color: #1a1a1a;
-    transform-style: preserve-3d;
-    perspective: 1000px;
+    will-change: opacity, transform;
 }
 
 .gallery-column:nth-child(2) {
