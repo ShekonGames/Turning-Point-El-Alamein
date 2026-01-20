@@ -151,9 +151,9 @@ document.addEventListener('DOMContentLoaded', () => {
         element.appendChild(fragment);
     }
     
-    const titleElement = document.querySelector('.gallery-title');
-    if (titleElement) {
-        splitTextIntoWords(titleElement);
+    const galleryTitleElement = document.querySelector('.gallery-section .gallery-title');
+    if (galleryTitleElement) {
+        splitTextIntoWords(galleryTitleElement);
     }
     
     const descElement = document.querySelector('.gallery-description');
@@ -161,8 +161,14 @@ document.addEventListener('DOMContentLoaded', () => {
         splitTextIntoWords(descElement);
     }
     
-    const titleWords = document.querySelectorAll('.gallery-title .word');
+    const trailerTitleElement = document.querySelector('.trailer-section .gallery-title');
+    if (trailerTitleElement) {
+        splitTextIntoWords(trailerTitleElement);
+    }
+    
+    const titleWords = document.querySelectorAll('.gallery-section .gallery-title .word');
     const descWords = document.querySelectorAll('.gallery-description .word');
+    const trailerTitleWords = document.querySelectorAll('.trailer-section .gallery-title .word');
     
     let galleryItems = gsap.utils.toArray('.gallery-item');
     
@@ -256,6 +262,142 @@ document.addEventListener('DOMContentLoaded', () => {
         pin: '.gallery-text',
         pinSpacing: false,
         invalidateOnRefresh: true
+    });
+    
+    const trailerTitleTimeline = gsap.timeline({
+        scrollTrigger: {
+            trigger: '.trailer-section',
+            start: 'top 70%',
+            end: 'top 40%',
+            scrub: 2,
+            invalidateOnRefresh: true
+        }
+    });
+    
+    trailerTitleWords.forEach((word, wordIndex) => {
+        const letters = word.querySelectorAll('.letter');
+        
+        trailerTitleTimeline.to(letters, {
+            opacity: 1,
+            x: 0,
+            duration: 0.4,
+            stagger: 0.05,
+            ease: 'power2.out'
+        }, wordIndex * 0.15);
+    });
+    
+    gsap.fromTo('.video-frame',
+        {
+            opacity: 0,
+            scale: 0.9,
+            rotateX: 5
+        },
+        {
+            opacity: 1,
+            scale: 1,
+            rotateX: 0,
+            duration: 1.5,
+            ease: 'power3.out',
+            scrollTrigger: {
+                trigger: '.trailer-section',
+                start: 'top 60%',
+                end: 'top 30%',
+                scrub: 1.5,
+                invalidateOnRefresh: true
+            }
+        }
+    );
+    
+    gsap.to('.trailer-bg-glow', {
+        y: -100,
+        scale: 1.2,
+        ease: 'none',
+        scrollTrigger: {
+            trigger: '.trailer-section',
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 2,
+            invalidateOnRefresh: true
+        }
+    });
+    
+    const statItems = gsap.utils.toArray('.stat-item');
+    
+    gsap.fromTo(statItems,
+        {
+            opacity: 0,
+            y: 30,
+            scale: 0.95
+        },
+        {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 1,
+            stagger: 0.15,
+            ease: 'back.out(1.2)',
+            scrollTrigger: {
+                trigger: '.video-info',
+                start: 'top 85%',
+                end: 'top 60%',
+                scrub: 1,
+                invalidateOnRefresh: true
+            }
+        }
+    );
+    
+    gsap.fromTo('.trailer-decorative-line',
+        {
+            scaleX: 0,
+            opacity: 0
+        },
+        {
+            scaleX: 1,
+            opacity: 1,
+            duration: 1.2,
+            ease: 'power2.out',
+            scrollTrigger: {
+                trigger: '.trailer-header',
+                start: 'top 75%',
+                toggleActions: 'play none none none'
+            }
+        }
+    );
+    
+    const videoFrame = document.querySelector('.video-frame');
+    const frameCorners = document.querySelectorAll('.frame-corner');
+    
+    if (videoFrame) {
+        videoFrame.addEventListener('mouseenter', () => {
+            gsap.to(frameCorners, {
+                scale: 1.15,
+                opacity: 1,
+                duration: 0.3,
+                ease: 'power2.out'
+            });
+        });
+        
+        videoFrame.addEventListener('mouseleave', () => {
+            gsap.to(frameCorners, {
+                scale: 1,
+                opacity: 0.8,
+                duration: 0.3,
+                ease: 'power2.out'
+            });
+        });
+    }
+    
+    const frameGlows = gsap.utils.toArray('.frame-glow');
+    
+    frameGlows.forEach((glow, index) => {
+        gsap.to(glow, {
+            opacity: 0.8,
+            duration: 2,
+            repeat: -1,
+            yoyo: true,
+            ease: 'sine.inOut',
+            delay: index * 0.5
+        });
     });
     
     ScrollTrigger.refresh();
