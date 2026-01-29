@@ -379,6 +379,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ease: 'power4.out'
     });
 
+    // Простой пин для текста
     ScrollTrigger.create({
         trigger: '.gallery-text',
         start: 'center center',
@@ -427,23 +428,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     );
 
+    // ИСПРАВЛЕНО: Оптимизированная анимация зеленой линии футера
     gsap.set('.footer-green-line', { scaleX: 0, transformOrigin: 'left center' });
     gsap.to('.footer-green-line', {
         scaleX: 1, duration: 1.5, ease: 'power2.out',
         scrollTrigger: {
             trigger: '.footer-section',
-            start: 'top 90%',
-            end: 'top 60%',
+            start: 'top 95%',
+            end: 'top 75%',
             scrub: scrubValue,
             invalidateOnRefresh: true
         }
     });
 
+    // ИСПРАВЛЕНО: Оптимизированная анимация левого текста футера
     const footerLeftTimeline = gsap.timeline({
         scrollTrigger: {
             trigger: '.footer-content',
-            start: 'top 90%',
-            end: 'bottom 60%',
+            start: 'top 95%',
+            end: 'top 70%',
             scrub: scrubValue,
             invalidateOnRefresh: true
         }
@@ -453,15 +456,16 @@ document.addEventListener('DOMContentLoaded', () => {
         word.querySelectorAll('.letter').forEach((letter, letterIndex) => {
             footerLeftTimeline.to(letter, {
                 opacity: 1, x: 0, duration: 0.2, ease: 'power2.out'
-            }, wordIndex * 0.08 + letterIndex * 0.03);
+            }, wordIndex * 0.06 + letterIndex * 0.02);
         });
     });
 
+    // ИСПРАВЛЕНО: Оптимизированная анимация правого текста футера
     const footerRightTimeline = gsap.timeline({
         scrollTrigger: {
             trigger: '.footer-content',
-            start: 'top 90%',
-            end: 'bottom 60%',
+            start: 'top 95%',
+            end: 'top 70%',
             scrub: scrubValue,
             invalidateOnRefresh: true
         }
@@ -471,32 +475,34 @@ document.addEventListener('DOMContentLoaded', () => {
         word.querySelectorAll('.letter').forEach((letter, letterIndex) => {
             footerRightTimeline.to(letter, {
                 opacity: 1, x: 0, duration: 0.2, ease: 'power2.out'
-            }, wordIndex * 0.08 + letterIndex * 0.03);
+            }, wordIndex * 0.06 + letterIndex * 0.02);
         });
     });
 
+    // ИСПРАВЛЕНО: Оптимизированная анимация логотипа футера
     gsap.fromTo('.footer-logo',
         { opacity: 0, scale: 0.8, y: 20 },
         {
             opacity: 1, scale: 1, y: 0, duration: 1, ease: 'back.out(1.5)',
             scrollTrigger: {
                 trigger: '.footer-content',
-                start: 'top 90%',
-                end: 'bottom 60%',
+                start: 'top 95%',
+                end: 'top 70%',
                 scrub: scrubValue,
                 invalidateOnRefresh: true
             }
         }
     );
 
+    // ИСПРАВЛЕНО: Оптимизированная анимация нижнего текста футера
     gsap.fromTo('.footer-bottom p',
         { opacity: 0, y: 20 },
         {
-            opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: 'power2.out',
+            opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ease: 'power2.out',
             scrollTrigger: {
                 trigger: '.footer-bottom',
-                start: 'top 95%',
-                end: 'bottom 70%',
+                start: 'top 98%',
+                end: 'top 80%',
                 scrub: scrubValue,
                 invalidateOnRefresh: true
             }
